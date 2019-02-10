@@ -7,7 +7,7 @@ class KnightTour {
   start() {
     const parallelFunction = new ParallelFunction((boardSize, firsMove) => {
       const visited = 1, notVisited = 0, possibleMovesCount = Math.pow(boardSize, 2);
-      const chessboard = Array(boardSize || 8).fill(null).map(
+      const chessboard = Array(boardSize || 8).fill([]).map(
         () => Array(boardSize).fill(notVisited)
       );
       const moves = [], firstMove = firsMove || [0, 0];
@@ -18,14 +18,14 @@ class KnightTour {
 
       function getPossibleMoves(chessboard, position) {
         const possibleMoves = [
-          [position[0] - 1, position[1] - 2],
-          [position[0] - 2, position[1] - 1],
           [position[0] + 1, position[1] - 2],
           [position[0] + 2, position[1] - 1],
-          [position[0] - 2, position[1] + 1],
-          [position[0] - 1, position[1] + 2],
           [position[0] + 1, position[1] + 2],
           [position[0] + 2, position[1] + 1],
+          [position[0] - 1, position[1] - 2],
+          [position[0] - 2, position[1] - 1],
+          [position[0] - 2, position[1] + 1],
+          [position[0] - 1, position[1] + 2]
         ];
 
         return possibleMoves.filter((move) => {
