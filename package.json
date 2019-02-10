@@ -1,0 +1,14 @@
+{
+  "name": "passeio_do_cavalo",
+  "description": "Algoritimo: Passeio do Cavalo",
+  "version": "1.0.0",
+  "engines": {
+    "node": "10.15.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
