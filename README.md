@@ -1,6 +1,6 @@
-# sort_algorithm_comparative
-Comparação do pior caso dos Algoritimos: Bubble Sort, Insertion Sort, Quick Sort
+# passeio_do_cavalo
+Algoritimo: Passeio do Cavalo
 
 Online demo:
 
-https://intense-bastion-99189.herokuapp.com/
+https://boiling-bayou-93970.herokuapp.com/
