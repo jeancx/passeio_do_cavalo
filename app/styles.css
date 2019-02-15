@@ -63,4 +63,5 @@ input {
 tr:nth-child(odd) td:nth-child(even), tr:nth-child(even) td:nth-child(odd) {
     background-color: black;
     color: white;
+    text-shadow: 2px 2px black;
 }
