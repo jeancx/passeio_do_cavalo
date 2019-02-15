@@ -9,6 +9,8 @@ class App extends React.Component {
 
     this.timer = null;
     this.startedOn = 0;
+    this.y = 0;
+    this.x = 1;
 
     const board = new Array(8).fill([]).map(() => (new Array(8).fill(0)));
 
@@ -28,13 +30,13 @@ class App extends React.Component {
     this.fastForwardMove = this.fastForwardMove.bind(this);
   }
 
-  setKnightPosition(x, y, index = 0) {
-    this.setState({ knightPosition: { x, y, index } })
+  setKnightPosition(y, x, index = 0) {
+    this.setState({ knightPosition: { y, x, index } })
   }
 
   bgKnight(testPosition) {
-    const { x, y } = this.state.knightPosition;
-    return x === testPosition[0] && y === testPosition[1] ? 'knight' : '';
+    const { y, x } = this.state.knightPosition;
+    return y === testPosition[this.y] && x === testPosition[this.x]  ? 'knight' : '';
   }
 
   startTime() {
@@ -51,9 +53,8 @@ class App extends React.Component {
   }
 
   startJourney() {
-    console.log(this.state);
-    const { x, y } = this.state.knightPosition;
-    const knightTour = new KnightTour(8, [x, y]);
+    const { y, x } = this.state.knightPosition;
+    const knightTour = new KnightTour(8, [y, x]);
 
     this.startTime();
     const startTime = new Date();
@@ -62,10 +63,9 @@ class App extends React.Component {
       console.log('knightTourResult', resultado);
       this.setState((state) => {
         let newState = { ...state, ...resultado };
-        const x = 0, y = 1;
 
         resultado.moves.forEach((move, index) => {
-          newState.board[move[x]][move[y]] = index + 1;
+          newState.board[move[this.y]][move[this.x]] = index + 1;
         });
 
         newState.time = new Date() - startTime;
@@ -76,21 +76,25 @@ class App extends React.Component {
 
   rewindMove() {
     const firstMove = {
-      x: this.state.moves[0][0],
-      y: this.state.moves[0][1],
+      y: this.state.moves[0][this.y],
+      x: this.state.moves[0][this.x],
       index: 0
     };
     this.setState({ knightPosition: firstMove })
   }
 
   backMove() {
-    const nextIndex = this.state.knightPosition[2]--;
-    const netxPosition = {
-      x: this.state.moves[63][0],
-      y: this.state.moves[63][1],
-      index: 63
-    };
-    this.setState({ knightPosition: netxPosition })
+    const nextIndex = this.state.knightPosition.index - 1;
+
+    if(nextIndex >= 0) {
+      const nextPosition = {
+        y: this.state.moves[nextIndex][this.y],
+        x: this.state.moves[nextIndex][this.x],
+        index: nextIndex
+      };
+
+      this.setState({knightPosition: nextPosition})
+    }
   }
 
   playMove() {
@@ -99,14 +103,17 @@ class App extends React.Component {
     const nextMove = () => {
       setTimeout(() => {
         if (this.state.playing) {
-          const nextIndex = this.state.knightPosition[2]++;
-          const netxPosition = {
-            x: this.state.moves[nextIndex][0],
-            y: this.state.moves[nextIndex][1],
-            index: nextIndex
-          };
-          this.setState({ knightPosition: netxPosition });
-          nextMove();
+          const nextIndex = this.state.knightPosition.index + 1;
+
+          if(nextIndex <= 63) {
+            const nextPosition = {
+              y: this.state.moves[nextIndex][this.y],
+              x: this.state.moves[nextIndex][this.x],
+              index: nextIndex
+            };
+            this.setState({ knightPosition: nextPosition });
+            nextMove();
+          }
         }
       }, 1000);
     }
@@ -117,18 +124,22 @@ class App extends React.Component {
   }
 
   forwardMove() {
-    const nextIndex = ++this.state.knightPosition[2];
-    const nextMove = this.state.moves[nextIndex];
-    this.setState({ knightPosition: [nextMove[0], nextMove[1], nextIndex] });
+    const nextIndex = this.state.knightPosition.index + 1;
+
+    if(nextIndex < 64) {
+      const nextMove = this.state.moves[nextIndex];
+      this.setState({ knightPosition: { y: nextMove[this.y], x: nextMove[this.x], index: nextIndex} });
+    }
   }
 
   fastForwardMove() {
-    const netxPosition = {
-      x: this.state.moves[63][0],
-      y: this.state.moves[63][1],
+    console.log(this.state.moves[63]);
+    const nextPosition = {
+      y: this.state.moves[63][this.y],
+      x: this.state.moves[63][this.x],
       index: 63
     };
-    this.setState({ knightPosition: netxPosition })
+    this.setState({ knightPosition: nextPosition })
   }
 
 
@@ -172,8 +183,8 @@ class App extends React.Component {
                         { row.map((col, indexCol) => {
                           return (
                             <td key={ `${ indexRow }${ indexCol }` }
-                                onClick={ this.setKnightPosition.bind(this, indexCol, indexRow, 0) }
-                                className={ this.bgKnight([indexCol, indexRow]) }>
+                                onClick={ this.setKnightPosition.bind(this, indexRow, indexCol, 0) }
+                                className={ this.bgKnight([indexRow, indexCol]) }>
                               <span>{ col > 0 ? col : '' }</span>
                             </td>
                           )
