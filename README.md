@@ -3,4 +3,4 @@ Algoritimo: Passeio do Cavalo
 
 Online demo:
 
-https://boiling-bayou-93970.herokuapp.com/
+https://passeio-do-cavalo.herokuapp.com/
