@@ -1,5 +1,5 @@
 # passeio_do_cavalo
-Algoritimo: Passeio do Cavalo
+Algoritimo: Passeio do Cavalo, Knight Tour
 
 Online demo:
 
