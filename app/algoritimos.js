@@ -7,16 +7,16 @@ class KnightTour {
   start() {
     const parallelFunction = new ParallelFunction((boardSize, firsMove) => {
       const visited = 1, notVisited = 0, possibleMovesCount = Math.pow(boardSize, 2);
-      const chessboard = Array(boardSize || 8).fill([]).map(
+      const board = Array(boardSize || 8).fill([]).map(
         () => Array(boardSize).fill(notVisited)
       );
       const moves = [], firstMove = firsMove || [0, 0];
       let removedMoves = [], triesCount = 0;
 
       moves.push(firstMove);
-      chessboard[firstMove[0]][firstMove[1]] = visited;
+      board[firstMove[0]][firstMove[1]] = visited;
 
-      function getPossibleMoves(chessboard, position) {
+      function getPossibleMoves(board, position) {
         const possibleMoves = [
           [position[0] + 1, position[1] - 2],
           [position[0] + 2, position[1] - 1],
@@ -33,22 +33,33 @@ class KnightTour {
         });
       }
 
-      function isMoveAllowed(chessboard, move) {
-        return chessboard[move[0]][move[1]] !== visited;
+      function isMoveAllowed(board, move) {
+        return board[move[0]][move[1]] !== visited;
       }
 
-      function movesNearEdge(chessboard, move) {
-        const notVisitedHousesFields = chessboard.filter((point) => point === notVisited);
-        const avaliableMovesNearEdge = notVisitedHousesFields.filter((point) => point === notVisited);
-
+      function calcCost(board, move) {
+        return getPossibleMoves(board, move).length;
       }
 
-      function isBoardCompletelyVisited(chessboard, moves) {
+      function lessCostMoves(board, possibleMoves) {
+        return possibleMoves.sort((moveA, moveB) => {
+          const costA = calcCost(board, moveA), costB = calcCost(board, moveB);
+          if (costA < costB) {
+            return -1;
+          }
+          if (costA > costB) {
+            return 1;
+          }
+          return 0;
+        });
+      }
+
+      function isBoardCompletelyVisited(board, moves) {
         return possibleMovesCount === moves.length;
       }
 
-      function knightTourRecursive(chessboard, moves) {
-        const board = chessboard;
+      function knightTourRecursive(currentBoard, moves) {
+        const board = currentBoard;
 
         if (isBoardCompletelyVisited(board, moves)) {
           return true;
@@ -56,9 +67,10 @@ class KnightTour {
 
         const lastMove = moves[moves.length - 1];
         const possibleMoves = getPossibleMoves(board, lastMove);
+        const listOfLessCostMoves = lessCostMoves(board, possibleMoves);
 
-        for (let i = 0; i < possibleMoves.length; i++) {
-          const currentMove = possibleMoves[i];
+        for (let i = 0; i < listOfLessCostMoves.length; i++) {
+          const currentMove = listOfLessCostMoves[i];
           triesCount++;
 
           if (triesCount % 100000000 === 0) {
@@ -81,8 +93,8 @@ class KnightTour {
         return false;
       }
 
-      const solutionWasFound = knightTourRecursive(chessboard, moves, removedMoves);
-      return { solutionWasFound, moves, removedMoves, chessboard, triesCount };
+      const solutionWasFound = knightTourRecursive(board, moves);
+      return { solutionWasFound, moves, board, triesCount };
     });
 
     return parallelFunction(this.boardSize, this.firsMove);

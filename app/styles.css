@@ -33,9 +33,11 @@ input {
     background-color: #f1f1f1 !important
 }
 
-.green {
-    color: #fff !important;
-    background-color: #4CAF50 !important
+.knight {
+    background: url("./knight-chess.png");
+    background-repeat: no-repeat;
+    background-size: 65px 65px;
+    background-position: center;
 }
 
 .green-bar {
@@ -49,9 +51,16 @@ input {
     margin-right: auto;
     margin-top: 20px;
     width: 601px;
-
 }
 
 .table td {
     height: 75px;
+    text-align: center;
+    font-weight: 600;
+    padding: 25px !important;
+}
+
+tr:nth-child(odd) td:nth-child(even), tr:nth-child(even) td:nth-child(odd) {
+    background-color: black;
+    color: white;
 }
